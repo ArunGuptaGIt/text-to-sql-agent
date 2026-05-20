@@ -37,9 +37,17 @@ def compare_results(gen_sql: str, gold_sql: str) -> bool:
         gen_res = execute_query(gen_sql)
         gold_res = execute_query(gold_sql)
         
-        # We're just checking row counts for now to avoid dealing with column ordering
-        # or exact data matching logic.
-        return len(gen_res.get("rows", [])) == len(gold_res.get("rows", []))
+        gen_rows = gen_res.get("rows", [])
+        gold_rows = gold_res.get("rows", [])
+        
+        if len(gen_rows) != len(gold_rows):
+            return False
+            
+        # Extract values, ignoring column names, and sort them to compare regardless of row order
+        def extract_values(rows):
+            return sorted([tuple(str(v) for v in row.values()) for row in rows])
+            
+        return extract_values(gen_rows) == extract_values(gold_rows)
         
     except Exception:
         # If execution fails, back off to a dirty string comparison to catch structural matches
@@ -88,8 +96,8 @@ def run_benchmark():
         res = run_pipeline(question, gold_sql=gold_sql, skip_summary=True)
         elapsed = time.time() - start
 
-        # See how the very first attempt did against the gold query
-        sql_match = compare_results(res["first_sql"], gold_sql)
+        # Evaluate the final generated query against the gold query
+        sql_match = compare_results(res["sql"], gold_sql)
 
         status_icon = "[OK]" if res["status"] == "success" else "[FAIL]"
         match_icon = "[MATCH]" if sql_match else "[DIFF]"
@@ -100,7 +108,7 @@ def run_benchmark():
             "qid": qid,
             "question": question,
             "ground_truth": gold_sql,
-            "generated_sql": res["first_sql"],
+            "generated_sql": res["sql"],
             "sql_match": sql_match,
             "status": res["status"],
             "attempts": res.get("attempts", 1),
