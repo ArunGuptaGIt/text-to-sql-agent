@@ -1,0 +1,11 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+venv/
+logs/query_logs.json
+.streamlit/
+/benchmark
+/evaluation
+/logs
+seed.sql
