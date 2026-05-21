@@ -27,30 +27,7 @@ The project consists of several core components working seamlessly together:
 ## ⚙️ Environment Configuration
 
 1. Locate or create a .env file in the project's roots.
-2. Set the following required variables:
-
-`ini
-# PostgreSQL Database (Credentials are passed seamlessly into Docker Compose)
-POSTGRES_USER=admin
-POSTGRES_PASSWORD=admin123
-POSTGRES_DB=classicmodels
-
-# Note: Default internal docker connection for api container
-DATABASE_URL=postgresql://admin:admin123@db:5432/classicmodels
-# If testing completely manually/locally, swap the URL above to this:
-# DATABASE_URL=postgresql://admin:admin123@127.0.0.1:5435/classicmodels
-
-# LLM Selection (e.g. huggingface, gemini)
-ACTIVE_LLM=huggingface
-
-# HuggingFace Setup
-HUGGINGFACE_API_KEY=your_huggingface_api_key_here
-HF_MODEL=meta-llama/Meta-Llama-3-70B-Instruct
-
-# Gemini Setup (Optional alternative)
-GEMINI_API_KEY=your_gemini_api_key_here
-GEMINI_MODEL=gemini-2.0-flash-lite
-`
+2. Set the required variables shown in .env.example:
 
 ## 🚀 Running the Project
 
@@ -58,7 +35,7 @@ GEMINI_MODEL=gemini-2.0-flash-lite
 
 To spin up the entire application stack (Database, API, and UI Frontend) in one command:
 
-`ash
+`bash
 docker-compose up --build
 `
 - **Streamlit UI**: http://localhost:8501
@@ -68,7 +45,7 @@ docker-compose up --build
 ### Running the Evaluation Benchmark (Local)
 
 1. Ensure your local virtual environment is active and requirements are installed:
-`ash
+`bash
 python -m venv venv
 # Enable venv on Windows:
 venv\Scripts\Activate.ps1
@@ -76,8 +53,8 @@ pip install -r requirements.txt
 `
 2. Note: For local script executions interacting with the database, ensure DATABASE_URL in the .env file maps to the mapped localhost:5435 port as instructed above.
 3. Run the benchmark tool:
-`ash
-cd Week3
+`bash
+cd flodername
 python scripts/benchmark.py
 `
 4. Find the detailed generated reports in:
